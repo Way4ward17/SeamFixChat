@@ -11,13 +11,13 @@ public class SharedPrefManager {
 
     private static SharedPrefManager mInstance;
     private  Context mCtx;
-    private  final String SHARED_PREF_NAME = "myshared";
+
 
 
     public String getTopic(){
         SharedPreferences sharedPreferences =  mCtx.getSharedPreferences(
-                SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString("TOPIC", null);
+                "TOPIC", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("id", null);
     }
 
     public boolean saveTopic(String id){

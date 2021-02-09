@@ -12,6 +12,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class App extends Application {
 
+
+    String topic;
     String clientId = MqttClient.generateClientId();
     MqttAndroidClient client;
 
@@ -19,6 +21,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        topic = "testtopic/seamfix1";
 
         client = new MqttAndroidClient(getApplicationContext(), "tcp://broker.hivemq.com:1883", clientId);
 

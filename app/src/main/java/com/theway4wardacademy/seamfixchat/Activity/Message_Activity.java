@@ -1,14 +1,17 @@
-package com.theway4wardacademy.seamfixchat;
+package com.theway4wardacademy.seamfixchat.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class Message_Activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    }
+
+    public void gotoProfile(View view) {
     }
 }

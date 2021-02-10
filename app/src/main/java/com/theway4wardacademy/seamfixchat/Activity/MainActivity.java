@@ -31,7 +31,7 @@ import static com.theway4wardacademy.seamfixchat.Utils.Util.CHAT_SERVER;
 public class MainActivity extends AppCompatActivity {
 
     Button submitBtn;
-    EditText username;
+    EditText username, topic;
 
     SharedPrefManager sharedPrefs;
     @Override
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPrefs = new SharedPrefManager(this);
         submitBtn = findViewById(R.id.login);
         username = findViewById(R.id.username);
+        topic = findViewById(R.id.topic);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
 
                     try {
-                        mqttAndroidClient.subscribe(Util.USER_SUBSCRIPTION_TOPIC, 1, null, new IMqttActionListener() {
+                        mqttAndroidClient.subscribe(sharedPrefs.getTopic(), 1, null, new IMqttActionListener() {
                             @Override
                             public void onSuccess(IMqttToken asyncActionToken) {
                                 if (!sharedPrefs.getIsUserSubscribed()) {
@@ -87,11 +88,12 @@ public class MainActivity extends AppCompatActivity {
                                         //send broadcast to other users
                                         publishUserMessage( "User " + "\'" +  sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")) + "\'" + " has joined the chat", "alert", mqttAndroidClient);
                                         sharedPrefs.setIsNewJoineeBroadcasted(true);
+                                        sharedPrefs.saveTopic("testtopic/"+topic.getText().toString());
                                     }
 
 
                                     Log.e("subscription","success");
-                                    Toast.makeText(getApplicationContext(),  getString(R.string.label_subscribed_to_topic, Util.USER_SUBSCRIPTION_TOPIC), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(),  getString(R.string.label_subscribed_to_topic, sharedPrefs.getTopic()), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(MainActivity.this, Message_Activity.class);
                                     startActivity(intent);
                                     finish();
@@ -131,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
         if (username.getText().toString().trim().isEmpty()) {
             username.setError(getString(R.string.label_empty_text_field_required));
             username.requestFocus();
+
+            if(topic.getText().toString().trim().isEmpty()){
+            topic.setError(getString(R.string.label_empty_text_field_required));
+            topic.requestFocus();
+            return false;
+            }
             return false;
         }
         return  true;
@@ -152,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             message.setQos(0);
             message.setPayload(jsonObject.toString().getBytes());
 
-            mqttAndroidClient.publish(Util.CHAT_PUBLISH_TOPIC, message);
+            mqttAndroidClient.publish(sharedPrefs.getTopic(), message);
 
             try {
                 if (!mqttAndroidClient.isConnected()) {

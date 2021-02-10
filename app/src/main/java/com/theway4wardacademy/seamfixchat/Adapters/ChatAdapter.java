@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,40 +80,63 @@ public class ChatAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         ChatItemModel current = chatItemModelList.get(position);
 //        Log.e("current", current.getMessage());
 
-        switch (holder.getItemViewType()) {
-            case VIEW_TYPE_MESSAGE_SENT:
-                ((ChatSentViewHolder) holder).chatContent.setText(current.getMessage());
-                ((ChatSentViewHolder) holder).sentDateTime.setText(current.getSentDateTime());
+        if(!chatItemModelList.isEmpty()) {
+            switch (holder.getItemViewType()) {
+                case VIEW_TYPE_MESSAGE_SENT:
+                    ((ChatSentViewHolder) holder).chatContent.setText(current.getMessage());
+                    ((ChatSentViewHolder) holder).sentDateTime.setText(current.getSentDateTime());
 
-                Cursor cursor = db.rawQuery("SELECT * FROM " + ChatItemModel.TABLE_NAME + " WHERE "
-                        + ChatItemModel.KEY_MESSAGE_ID + "=" + current.getMessageID(), null);
-                cursor.moveToFirst();
+                    Cursor cursor = db.rawQuery("SELECT * FROM " + ChatItemModel.TABLE_NAME + " WHERE "
+                            + ChatItemModel.KEY_MESSAGE_ID + "=" + current.getMessageID(), null);
+                    cursor.moveToFirst();
 
-                if (cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1) {
-                    ((ChatSentViewHolder) holder).statusPending.setVisibility(View.GONE);
-                    ((ChatSentViewHolder) holder).statusSent.setVisibility(View.VISIBLE);
-                }else {
-                    ((ChatSentViewHolder) holder).statusPending.setVisibility(View.VISIBLE);
-                    ((ChatSentViewHolder) holder).statusSent.setVisibility(View.GONE);
-                }
+                    ((ChatSentViewHolder) holder).body.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            ((ChatSentViewHolder) holder).delete.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    });
+                    ((ChatSentViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ((ChatSentViewHolder) holder).delete.setVisibility(View.GONE);
+                        }
+                    });
+                    if (cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1) {
+                        ((ChatSentViewHolder) holder).statusPending.setVisibility(View.GONE);
+                        ((ChatSentViewHolder) holder).statusSent.setVisibility(View.VISIBLE);
+                    } else {
+                        ((ChatSentViewHolder) holder).statusPending.setVisibility(View.VISIBLE);
+                        ((ChatSentViewHolder) holder).statusSent.setVisibility(View.GONE);
+                    }
 
-                break;
+                    break;
 
-            case VIEW_TYPE_MESSAGE_RECEIVED:
-                ((ChatReceivedViewHolder) holder).senderName.setText(current.getSender().substring(0, current.getSender().lastIndexOf("_")));
-                ((ChatReceivedViewHolder) holder).chatContent.setText(current.getMessage());
-                ((ChatReceivedViewHolder) holder).sentDateTime.setText(current.getSentDateTime());
-                break;
+                case VIEW_TYPE_MESSAGE_RECEIVED:
+                    ((ChatReceivedViewHolder) holder).body.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            return false;
+                        }
+                    });
 
-            case VIEW_TYPE_ALERT:
-                ((ChatAlertVewHolder) holder).alertMessage.setText(current.getMessage());
-                break;
+                    ((ChatReceivedViewHolder) holder).senderName.setText(current.getSender().substring(0, current.getSender().lastIndexOf("_")));
+                    ((ChatReceivedViewHolder) holder).chatContent.setText(current.getMessage());
+                    ((ChatReceivedViewHolder) holder).sentDateTime.setText(current.getSentDateTime());
+                    break;
+
+
+
+                case VIEW_TYPE_ALERT:
+                    ((ChatAlertVewHolder) holder).alertMessage.setText(current.getMessage());
+                    break;
+            }
         }
-
     }
 
 
@@ -127,15 +151,17 @@ public class ChatAdapter extends RecyclerView.Adapter {
         TextView sentDateTime;
 
         ImageView statusPending;
-        ImageView statusSent;
+        ImageView statusSent, delete;
+        LinearLayout body;
 
         public ChatSentViewHolder(View itemView) {
             super(itemView);
 
             chatContent = (TextView) itemView.findViewById(R.id.sentText);
             sentDateTime = (TextView) itemView.findViewById(R.id.sentDateTime);
-
+            body = (LinearLayout) itemView.findViewById(R.id.body);
             statusPending = (ImageView) itemView.findViewById(R.id.messageSentStatus_Awaited);
+            delete = (ImageView) itemView.findViewById(R.id.delete);
             statusSent = (ImageView) itemView.findViewById(R.id.messageSentStatus_Sent);
         }
     }
@@ -145,12 +171,13 @@ public class ChatAdapter extends RecyclerView.Adapter {
         TextView senderName;
         TextView chatContent;
         TextView sentDateTime;
-
+        LinearLayout body;
         public ChatReceivedViewHolder(View itemView) {
             super(itemView);
 
             senderName = (TextView) itemView.findViewById(R.id.senderName);
             chatContent = (TextView) itemView.findViewById(R.id.sentText);
+            body = (LinearLayout) itemView.findViewById(R.id.body);
             sentDateTime = (TextView) itemView.findViewById(R.id.sentDateTime);
         }
     }

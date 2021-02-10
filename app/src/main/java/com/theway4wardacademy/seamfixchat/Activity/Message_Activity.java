@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theway4wardacademy.seamfixchat.Adapters.ChatAdapter;
@@ -46,6 +51,7 @@ public class Message_Activity extends AppCompatActivity {
 
 
     MqttAndroidClient client;
+    TextView topic;
     SharedPrefManager sharedPrefs;
     static ChatAdapter chatRoomRecyclerAdapter;
     static List<ChatItemModel> chatItemModelList = new ArrayList<>();
@@ -69,6 +75,8 @@ public class Message_Activity extends AppCompatActivity {
         sharedPrefs = new SharedPrefManager(this);
 
 
+        topic = findViewById(R.id.username);
+        topic.setText(sharedPrefs.getTopic());
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
         chatMasterUpdateUtility = new ChatMasterUpdateUtility(getApplicationContext());
@@ -79,7 +87,6 @@ public class Message_Activity extends AppCompatActivity {
         sendBtn = (FloatingActionButton) findViewById(R.id.btn_send);
 
 
-        sharedPrefs = new SharedPrefManager(getApplicationContext());
         dbHelper = new DBHelper(getApplicationContext());
         db = dbHelper.getWritableDatabase();
         chatMasterUpdateUtility = new ChatMasterUpdateUtility(getApplicationContext());
@@ -98,11 +105,6 @@ public class Message_Activity extends AppCompatActivity {
                 current.setSentDateTime(cursor.getString(cursor.getColumnIndex(ChatItemModel.KEY_MESSAGE_SENT_DATETIME)));
                 current.setMessageSentStatusSuccess(cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1);
 
-//                int isPublished = cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_PUBLISHED_SUCCESSFULLY));
-//                Log.e("VAL isPublished", String.valueOf(isPublished));
-//                if (isPublished == 0) {
-//                    publishPendingMessage(current);
-//                }
 
                 chatItemModelList.add(current);
                 cursor.moveToNext();
@@ -134,15 +136,15 @@ public class Message_Activity extends AppCompatActivity {
                     client.setBufferOpts(disconnectedBufferOptions);
 
                     retryPendingPublishes();
-//                    ChatItemModel current = new ChatItemModel();
-//                    current.setMessage(getString(R.string.label_connected_to_topic, Hashdefine.USER_SUBSCRIPTION_TOPIC));
-//                    current.setSentDateTime(Hashdefine.getCurrentDateTimeInUTC());
-//                    current.setSender(sharedPrefs.getUsername());
-//                    current.setContentType("alert");
-//                    chatItemModelList.add(0,current);
-//
-//                    chatRoomRecyclerAdapter.notifyItemInserted(chatItemModelList.size() - 1);
-//                    Log.e("mqtt buffer", "initialized");
+                    ChatItemModel current = new ChatItemModel();
+                    current.setMessage(getString(R.string.label_connected_to_topic, sharedPrefs.getTopic()));
+                    current.setSentDateTime(Util.getCurrentDateTimeInUTC());
+                    current.setSender(sharedPrefs.getUsername());
+                    current.setContentType("alert");
+                    chatItemModelList.add(0,current);
+
+                    chatRoomRecyclerAdapter.notifyItemInserted(chatItemModelList.size() - 1);
+                    Log.e("mqtt buffer", "initialized");
                 }
 
                 @Override
@@ -150,7 +152,7 @@ public class Message_Activity extends AppCompatActivity {
                     Log.e("mqtt", "connection failed -- " + exception.toString());
 
                     ChatItemModel current = new ChatItemModel();
-                    current.setMessage(getString(R.string.label_connection_to_topic_failed, Util.USER_SUBSCRIPTION_TOPIC));
+                    current.setMessage(getString(R.string.label_connection_to_topic_failed, sharedPrefs.getTopic()));
                     current.setSentDateTime(Util.getCurrentDateTimeInUTC());
                     current.setSender(sharedPrefs.getUsername());
                     current.setContentType("alert");
@@ -165,7 +167,7 @@ public class Message_Activity extends AppCompatActivity {
         } catch (MqttException e) {
             e.printStackTrace();
             ChatItemModel current = new ChatItemModel();
-            current.setMessage(getString(R.string.label_connection_to_topic_failed, Util.USER_SUBSCRIPTION_TOPIC));
+            current.setMessage(getString(R.string.label_connection_to_topic_failed, sharedPrefs.getTopic()));
             current.setSentDateTime(Util.getCurrentDateTimeInUTC());
             current.setSender(sharedPrefs.getUsername());
             current.setContentType("alert");
@@ -315,7 +317,7 @@ public class Message_Activity extends AppCompatActivity {
 
         int qos = 1;
         try {
-            client.subscribe(Util.CHAT_PUBLISH_TOPIC, qos);
+            client.subscribe(sharedPrefs.getTopic(), qos);
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
@@ -342,12 +344,15 @@ public class Message_Activity extends AppCompatActivity {
 
 
     private void unsubscribe(){
+        finish();
         try {
-            IMqttToken unsubToken = client.unsubscribe(Util.CHAT_PUBLISH_TOPIC);
+            IMqttToken unsubToken = client.unsubscribe(sharedPrefs.getTopic());
             unsubToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // The subscription could successfully be removed from the client
+
+                    sharedPrefs.setIsUserSubscribed(false);
                 }
 
                 @Override
@@ -401,7 +406,7 @@ public class Message_Activity extends AppCompatActivity {
                 chatRoomRecyclerAdapter.notifyDataSetChanged();
             }
 
-            client.publish(Util.CHAT_PUBLISH_TOPIC, message);
+            client.publish(sharedPrefs.getTopic(), message);
 
             try {
                 if (!client.isConnected()) {
@@ -431,7 +436,7 @@ public class Message_Activity extends AppCompatActivity {
         if (reconnect) {
             //show to user that '<topic> joined'
             ChatItemModel current = new ChatItemModel();
-            current.setMessage(getString(R.string.label_reconnected_to_topic, Util.USER_SUBSCRIPTION_TOPIC));
+            current.setMessage(getString(R.string.label_reconnected_to_topic, sharedPrefs.getTopic()));
             current.setSentDateTime(Util.getCurrentDateTimeInUTC());
             current.setSender(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")));
             current.setContentType("alert");
@@ -440,7 +445,7 @@ public class Message_Activity extends AppCompatActivity {
         }else {
             //show to user that '<topic> joined'
             ChatItemModel current = new ChatItemModel();
-            current.setMessage(getString(R.string.label_connected_to_topic, Util.USER_SUBSCRIPTION_TOPIC));
+            current.setMessage(getString(R.string.label_connected_to_topic, sharedPrefs.getTopic()));
             current.setSentDateTime(Util.getCurrentDateTimeInUTC());
             current.setSender(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")));
             current.setContentType("alert");
@@ -493,7 +498,7 @@ public class Message_Activity extends AppCompatActivity {
             message.setQos(0);
             message.setPayload(jsonObject.toString().getBytes());
 
-            client.publish(Util.CHAT_PUBLISH_TOPIC, message);
+            client.publish(sharedPrefs.getTopic(), message);
 
             try {
                 if (!client.isConnected()) {
@@ -536,5 +541,40 @@ public class Message_Activity extends AppCompatActivity {
         //publishUserMessage(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")) + " disconnected", "alert");
     }
 
+
+    public void close(View view) {
+        finish();
+    }
+
+    public void more(View view) {
+
+        PopupMenu popupMenu = new PopupMenu(Message_Activity.this, view);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.clear:
+
+                        dbHelper.deleteOldTele();
+                        isDataLoadedFirstTime = true;
+                        sharedPrefs.setIsUserSubscribed(false);
+                        Intent intent = new Intent(Message_Activity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        return true;
+                    case R.id.unsub:
+                        unsubscribe();
+                        return true;
+                    case R.id.exit:
+                        finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.inflate(R.menu.option);
+        popupMenu.show();
+    }
 
 }

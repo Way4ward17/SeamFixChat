@@ -2,20 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/body"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    app:cardBackgroundColor="#00000000"
+    android:orientation="horizontal"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="0dp"
     android:padding="4dp">
 
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_margin="5dp"
+        app:tint="@color/colorPrimary"
+        android:src="@drawable/ic_baseline_group_work_24f"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="8dp"
         android:background="@drawable/shape_rounded_edges_chat_background_received"
-        android:layout_marginStart="8dp">
+        android:layout_marginStart="2dp">
 
         <TextView
             android:id="@+id/senderName"
@@ -24,7 +31,7 @@
             android:text="sender"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/sentText"
@@ -32,7 +39,7 @@
             android:layout_height="match_parent"
             android:maxWidth="280dp"
             android:text="sent texts chetan is excited to see the girl downstairs"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="14sp"
             android:layout_marginTop="6dp"/>
 
@@ -43,7 +50,7 @@
             android:textSize="10sp"
             android:text="date"
             android:layout_marginTop="4dp"
-            android:textColor="@android:color/darker_gray"/>
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

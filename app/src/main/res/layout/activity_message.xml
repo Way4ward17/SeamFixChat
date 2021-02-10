@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/root_view"
+    android:background="@drawable/welcome_bg"
     tools:context=".Activity.Message_Activity"
     android:layout_height="match_parent">
 
@@ -24,6 +25,7 @@
                 android:id="@+id/btn_back"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:layout_width="40dp"
+                android:onClick="close"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:tint="@android:color/white"/>
@@ -31,6 +33,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="30dp"
                 android:layout_height="35dp"
+                android:src="@drawable/ic_baseline_group_24"
                 android:id="@+id/profile_image"/>
             <LinearLayout
                 android:layout_width="0dp"
@@ -41,36 +44,32 @@
 
                 <TextView
                     android:id="@+id/username"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
-                    android:textSize="13sp" />
-                <TextView
-                    android:id="@+id/lastseen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="11sp" />
+                    android:textSize="15sp" />
+
             </LinearLayout>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:onClick="more"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:id="@+id/swipe"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@id/ln_action"
-        android:layout_height="match_parent">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:layout_above="@id/ln_action"
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
        />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
     <LinearLayout
         android:id="@+id/ln_action"
         android:layout_width="match_parent"
@@ -88,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 app:cardElevation="2dp"
                 app:cardCornerRadius="15dp"
                 >

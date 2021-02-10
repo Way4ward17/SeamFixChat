@@ -12,4 +12,5 @@
     <string name="label_write_something_here">Write something here</string>
     <string name="label_connection_lost">Connection lost</string>
     <string name="label_reconnected_to_topic">Reconnected to \'%1$s\'</string>
+    <string name="topic">Topic</string>
 </resources>

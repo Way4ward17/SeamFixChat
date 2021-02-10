@@ -25,20 +25,19 @@
 
 
             <ImageView
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/logo"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="15dp"
                 android:src="@drawable/ic_launcher"
-                android:layout_height="100dp"/>
+                android:layout_height="80dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:text="SeamFix Chat"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:layout_below="@id/logo"
-                android:textSize="40sp"
-                android:lineSpacingMultiplier="0.9"
+                android:textSize="30sp"
                 android:fontFamily="@font/nunito_bold"
                 android:id="@+id/logo1"
                 android:textColor="@android:color/black"
@@ -56,7 +55,7 @@
 
 
                 <LinearLayout
-                    android:layout_marginTop="34dp"
+                    android:layout_marginTop="14dp"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:orientation="vertical"
@@ -73,16 +72,16 @@
                             android:textSize="17sp"
                             android:layout_width="wrap_content"
                             android:textColor="@android:color/black"
-                            android:layout_marginBottom="15dp"
+                            android:layout_marginBottom="10dp"
                             android:fontFamily="@font/nunito_bold"
                             android:text="Username"
                             android:layout_height="wrap_content"/>
 
                         <EditText
                             android:drawableStart="@drawable/ic_baseline_account_circle_24"
-                            android:padding="15dp"
+                            android:padding="12dp"
 
-                            android:drawablePadding="10dp"
+                            android:drawablePadding="7dp"
                             android:background="@drawable/button"
                             android:hint="Username"
                             android:layout_width="match_parent"
@@ -93,6 +92,37 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+
+
+                        <TextView
+                            android:textSize="17sp"
+                            android:layout_width="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/nunito_bold"
+                            android:text="Topic"
+                            android:layout_height="wrap_content"/>
+
+                        <EditText
+                            android:drawableStart="@drawable/ic_baseline_group_24"
+                            android:padding="12dp"
+                            android:drawableTint="?attr/colorControlNormal"
+                            android:drawablePadding="7dp"
+                            android:background="@drawable/button"
+                            android:hint="@string/topic"
+                            android:layout_width="match_parent"
+                            android:id="@+id/topic"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"/>
+
+
+                    </LinearLayout>
 
                     <Button
                         android:layout_gravity="center"

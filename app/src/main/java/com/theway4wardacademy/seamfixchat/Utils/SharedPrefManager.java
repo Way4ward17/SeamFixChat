@@ -61,7 +61,7 @@ public class SharedPrefManager {
     public String getTopic(){
         SharedPreferences sharedPreferences =  mCtx.getSharedPreferences(
                 "TOPIC", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("id", null);
+        return sharedPreferences.getString("id", "testtopic/seamfix1");
     }
 
     public boolean saveTopic(String id){

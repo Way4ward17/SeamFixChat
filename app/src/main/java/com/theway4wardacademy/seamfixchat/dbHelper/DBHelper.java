@@ -37,4 +37,17 @@ public class DBHelper extends SQLiteOpenHelper implements BaseColumns {
         db.execSQL("DROP TABLE IF EXISTS " + ChatItemModel.TABLE_NAME);
         onCreate(db);
     }
+
+    public void deleteOldTele() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("DELETE FROM `ChatModel`");
+        // sqLiteDatabase.close();
+    }
+
+    public void deleteSingle(String id) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete("ChatModel", "MessageID = ?", new String[]{id});
+
+    }
+
 }

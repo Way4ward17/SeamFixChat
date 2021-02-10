@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="right"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/shape_rounded_edges_chat_background_sent">
+
+        <TextView
+            android:id="@+id/sentText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="sent texts"
+            android:maxWidth="280dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:id="@+id/sentDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:text="date"
+                android:textColor="@color/lightGrey"/>
+
+            <ImageView
+                android:id="@+id/messageSentStatus_Awaited"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_access_time_24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:visibility="gone"
+                />
+
+            <ImageView
+                android:id="@+id/messageSentStatus_Sent"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_done_24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

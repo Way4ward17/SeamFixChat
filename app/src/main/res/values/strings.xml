@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SeamFixChat</string>
+
+
+    <string name="label_empty_text_field_required">Required</string>
+    <string name="label_no_internet_available">Please connect to internet and try again</string>
+    <string name="label_something_went_wrong">Something went wrong</string>
+    <string name="label_subscribed_to_topic">Subscribed to \'%1$s\'</string>
+    <string name="label_connected_to_topic">Connected to \'%1$s\'</string>
+    <string name="label_connection_to_topic_failed">Connection to \'%1$s\' failed.\nPlease check your connection and try again</string>
+    <string name="label_new_user_joined">\'%1$s\' joined</string>
+    <string name="label_write_something_here">Write something here</string>
+    <string name="label_connection_lost">Connection lost</string>
+    <string name="label_reconnected_to_topic">Reconnected to \'%1$s\'</string>
 </resources>

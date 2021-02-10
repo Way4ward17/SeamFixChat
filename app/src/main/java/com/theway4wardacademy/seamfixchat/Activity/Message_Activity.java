@@ -21,7 +21,7 @@ public class Message_Activity extends AppCompatActivity {
 
     MqttAndroidClient client;
     String clientId = MqttClient.generateClientId();
-
+    String topic = "testtopic/seamfix1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +62,7 @@ public class Message_Activity extends AppCompatActivity {
 
 
     private void subscribe(){
-        String topic = "testtopic/seamfix1";
+
         int qos = 1;
         try {
             client.subscribe(topic, qos);
@@ -82,6 +82,30 @@ public class Message_Activity extends AppCompatActivity {
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
 
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void unsubscribe(){
+        try {
+            IMqttToken unsubToken = client.unsubscribe(topic);
+            unsubToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // The subscription could successfully be removed from the client
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // some error occurred, this is very unlikely as even if the client
+                    // did not had a subscription to the topic the unsubscribe action
+                    // will be successfully
                 }
             });
         } catch (MqttException e) {

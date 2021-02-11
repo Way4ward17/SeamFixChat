@@ -31,14 +31,14 @@ public class ChatMasterUpdateUtility {
         return db.insert(ChatItemModel.TABLE_NAME, null, contentValues);
     }
 
-    public int updateStatus(int messageID, boolean messageStatus) {
+    public int updateStatus(long messageID, boolean messageStatus) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY, messageStatus ? 1 : 0);
 
         return db.update(ChatItemModel.TABLE_NAME, contentValues, ChatItemModel.KEY_MESSAGE_ID + "=?", new String[]{String.valueOf(messageID)});
     }
 
-    public int updatePublishedStatus(int messageID, boolean status) {
+    public int updatePublishedStatus(long messageID, boolean status) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ChatItemModel.KEY_IS_MESSAGE_PUBLISHED_SUCCESSFULLY, status ? 1 : 0);
 

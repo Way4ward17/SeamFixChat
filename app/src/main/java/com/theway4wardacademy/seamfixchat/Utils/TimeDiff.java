@@ -31,7 +31,7 @@ public class TimeDiff extends Application {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-    public static long getTimeAgo(long time, Context ctx) {
+    public static String getTimeAgo(long time, Context ctx) {
         if (time < 1000000000000L) {
             // if timestamp given in seconds, convert to millis
             time *= 1000;
@@ -39,19 +39,23 @@ public class TimeDiff extends Application {
 
         long now = System.currentTimeMillis();
         if (time > now || time <= 0) {
-            return now;
+            return null;
         }
 
         // TODO: localize
         final long diff = now - time;
         if (diff < MINUTE_MILLIS) {
-            return diff;
+            return "now";
         } else if (diff < 2 * MINUTE_MILLIS) {
-            return diff;
+            return "59s";
         } else if (diff < 50 * MINUTE_MILLIS) {
-            return diff;
+            return diff / MINUTE_MILLIS + "m";
+        } else if (diff < 90 * MINUTE_MILLIS) {
+            return "59m";
+        } else if (diff < 24 * HOUR_MILLIS) {
+            return diff / HOUR_MILLIS + "h";
         } else
-            return diff;
+            return "";
 
     }
 }

@@ -3,6 +3,7 @@ package com.theway4wardacademy.seamfixchat.Adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
                             + ChatItemModel.KEY_MESSAGE_ID + "=" + current.getMessageID(), null);
                     cursor.moveToFirst();
 
+                    Log.d("caladapter", ""+current.getMessageID());
                     if(cursor.getCount() > 0) {
                         if (cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1) {
                             ((ChatSentViewHolder) holder).statusPending.setVisibility(View.GONE);
@@ -122,9 +124,11 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
                             long time = current.getMessageID();
                             long now = System.currentTimeMillis();
-                            long diff = time - now;
-                            if (diff > 30000){
-                                Toast.makeText(context,"Unable to delete",Toast.LENGTH_LONG).show();
+                            long diff = now - time;
+                            Log.d("calculate", ""+time+" - "+" "+now+" = "+diff);
+                            if (diff > 60000) {
+                                Toast.makeText(context,"Message cant be deleted again",Toast.LENGTH_LONG).show();
+                                ((ChatSentViewHolder) holder).delete.setVisibility(View.GONE);
                             }else {
 
                                 dbHelper.deleteSingle(String.valueOf(current.getMessageID()));
@@ -161,12 +165,13 @@ public class ChatAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onClick(View view) {
 
-
                             long time = current.getMessageID();
                             long now = System.currentTimeMillis();
-                            long diff = time - now;
-                            if (diff > 30000){
+                            long diff = now - time;
+                            Log.d("calculate", ""+time+" - "+" "+now+" = "+diff);
+                            if (diff > 60000) {
                                 Toast.makeText(context,"Unable to delete",Toast.LENGTH_LONG).show();
+                                ((ChatReceivedViewHolder) holder).delete.setVisibility(View.GONE);
                             }else {
 
                                 dbHelper.deleteSingle(String.valueOf(current.getMessageID()));

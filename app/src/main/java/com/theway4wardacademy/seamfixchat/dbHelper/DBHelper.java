@@ -9,7 +9,7 @@ import com.theway4wardacademy.seamfixchat.Models.ChatItemModel;
 
 
 public class DBHelper extends SQLiteOpenHelper implements BaseColumns {
-    private static final String DB_NAME = "DemoChatApp";
+    private static final String DB_NAME = "Seamfix";
     private static final int DB_VERSION = 2;
 
     public DBHelper(Context context) {
@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper implements BaseColumns {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String create_table_chat_master = "CREATE TABLE IF NOT EXISTS " + ChatItemModel.TABLE_NAME + " (" +
-                ChatItemModel.KEY_MESSAGE_ID + " INTEGER PRIMARY KEY, " +
+                ChatItemModel.KEY_MESSAGE_ID + " LONG PRIMARY KEY, " +
                 ChatItemModel.KEY_MESSAGE_CONTENT_TYPE + " TEXT, " +
                 ChatItemModel.KEY_MESSAGE_CONTENT +  " TEXT, " +
                 ChatItemModel.KEY_SENDER_ID + " TEXT, " +

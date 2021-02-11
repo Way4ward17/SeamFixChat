@@ -1,11 +1,12 @@
 # SeamFixChat
 A simple chat app using Eclipse paho mqtt library.
 
+
 <p>This is a simple chat application which using the MQTT technology and HiveMQ as a broker.</p>
 <p><strong>Features</strong></p>
 <p>1. Subscribe</p>
 <p>2. Unsubscribe</p>
-<p>3. Delete new chat posted less than a minute</p>
+<p>3. Delete new chat posted less than a minute. (Click and hold chat to delete)</p>
 <p>&nbsp;</p>
 <p><strong>Technology Used</strong></p>
 <p>1. Java</p>

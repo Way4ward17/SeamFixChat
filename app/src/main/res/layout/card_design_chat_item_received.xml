@@ -16,6 +16,13 @@
         app:tint="@color/colorPrimary"
         android:src="@drawable/ic_baseline_group_work_24f"
         android:layout_height="wrap_content"/>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:orientation="vertical"
+       android:layout_height="wrap_content">
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,4 +61,16 @@
 
     </LinearLayout>
 
+    <ImageView
+
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="5dp"
+        android:id="@+id/delete"
+        android:visibility="gone"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:layout_height="wrap_content"/>
+
+
+   </LinearLayout>
 </LinearLayout>

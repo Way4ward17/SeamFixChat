@@ -14,7 +14,7 @@ public class ChatItemModel {
     public static final String KEY_IS_MESSAGE_PUBLISHED_SUCCESSFULLY = "IsMessagePublishedSuccessFully";
 
     private String sender;
-    private int messageID;
+    private long messageID;
     private String message;
     private String sentDateTime;
     private boolean messageSentStatusSuccess;
@@ -29,11 +29,11 @@ public class ChatItemModel {
         this.sender = sender;
     }
 
-    public int getMessageID() {
+    public long getMessageID() {
         return messageID;
     }
 
-    public void setMessageID(int messageID) {
+    public void setMessageID(long messageID) {
         this.messageID = messageID;
     }
 

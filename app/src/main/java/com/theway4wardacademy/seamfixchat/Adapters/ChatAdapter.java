@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.theway4wardacademy.seamfixchat.Models.ChatItemModel;
 import com.theway4wardacademy.seamfixchat.R;
 import com.theway4wardacademy.seamfixchat.Utils.SharedPrefManager;
+import com.theway4wardacademy.seamfixchat.Utils.TimeDiff;
 import com.theway4wardacademy.seamfixchat.dbHelper.DBHelper;
 
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 public class ChatAdapter extends RecyclerView.Adapter {
     private Context context;
     private List<ChatItemModel> chatItemModelList;
-
+    TimeDiff timeDiff =  new TimeDiff();
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private static final int VIEW_TYPE_ALERT = 3;
@@ -108,6 +110,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
                     ((ChatSentViewHolder) holder).body.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
+
                             ((ChatSentViewHolder) holder).delete.setVisibility(View.VISIBLE);
                             return false;
                         }
@@ -115,10 +118,20 @@ public class ChatAdapter extends RecyclerView.Adapter {
                     ((ChatSentViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            dbHelper.deleteSingle(String.valueOf(current.getMessageID()));
-                            ((ChatSentViewHolder) holder).delete.setVisibility(View.GONE);
-                            chatItemModelList.remove(position);
-                            notifyItemRemoved(position);
+
+
+                            long time = current.getMessageID();
+                            long now = System.currentTimeMillis();
+                            long diff = time - now;
+                            if (diff > 30000){
+                                Toast.makeText(context,"Unable to delete",Toast.LENGTH_LONG).show();
+                            }else {
+
+                                dbHelper.deleteSingle(String.valueOf(current.getMessageID()));
+                                ((ChatSentViewHolder) holder).delete.setVisibility(View.GONE);
+                                chatItemModelList.remove(position);
+                                notifyItemRemoved(position);
+                            }
                         }
                     });
 
@@ -135,6 +148,36 @@ public class ChatAdapter extends RecyclerView.Adapter {
                     ((ChatReceivedViewHolder) holder).senderName.setText(current.getSender().substring(0, current.getSender().lastIndexOf("_")));
                     ((ChatReceivedViewHolder) holder).chatContent.setText(current.getMessage());
                     ((ChatReceivedViewHolder) holder).sentDateTime.setText(current.getSentDateTime());
+
+                    ((ChatReceivedViewHolder) holder).body.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+
+                            ((ChatReceivedViewHolder) holder).delete.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    });
+                    ((ChatReceivedViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+
+                            long time = current.getMessageID();
+                            long now = System.currentTimeMillis();
+                            long diff = time - now;
+                            if (diff > 30000){
+                                Toast.makeText(context,"Unable to delete",Toast.LENGTH_LONG).show();
+                            }else {
+
+                                dbHelper.deleteSingle(String.valueOf(current.getMessageID()));
+                                ((ChatReceivedViewHolder) holder).delete.setVisibility(View.GONE);
+                                chatItemModelList.remove(position);
+                                notifyItemRemoved(position);
+                            }
+                        }
+                    });
+
+
                     break;
 
 
@@ -178,10 +221,11 @@ public class ChatAdapter extends RecyclerView.Adapter {
         TextView senderName;
         TextView chatContent;
         TextView sentDateTime;
+        ImageView delete;
         LinearLayout body;
         public ChatReceivedViewHolder(View itemView) {
             super(itemView);
-
+            delete = (ImageView) itemView.findViewById(R.id.delete);
             senderName = (TextView) itemView.findViewById(R.id.senderName);
             chatContent = (TextView) itemView.findViewById(R.id.sentText);
             body = (LinearLayout) itemView.findViewById(R.id.body);

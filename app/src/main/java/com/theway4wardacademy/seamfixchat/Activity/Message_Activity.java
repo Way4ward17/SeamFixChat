@@ -22,6 +22,7 @@ import com.theway4wardacademy.seamfixchat.Adapters.ChatAdapter;
 import com.theway4wardacademy.seamfixchat.Models.ChatItemModel;
 import com.theway4wardacademy.seamfixchat.R;
 import com.theway4wardacademy.seamfixchat.Utils.SharedPrefManager;
+import com.theway4wardacademy.seamfixchat.Utils.TimeDiff;
 import com.theway4wardacademy.seamfixchat.Utils.Util;
 import com.theway4wardacademy.seamfixchat.dbHelper.ChatMasterUpdateUtility;
 import com.theway4wardacademy.seamfixchat.dbHelper.DBHelper;
@@ -440,18 +441,19 @@ public class Message_Activity extends AppCompatActivity {
             current.setSentDateTime(Util.getCurrentDateTimeInUTC());
             current.setSender(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")));
             current.setContentType("alert");
-            chatItemModelList.add(0,current);
-            chatRoomRecyclerAdapter.notifyDataSetChanged();
-        }else {
-            //show to user that '<topic> joined'
-            ChatItemModel current = new ChatItemModel();
-            current.setMessage(getString(R.string.label_connected_to_topic, sharedPrefs.getTopic()));
-            current.setSentDateTime(Util.getCurrentDateTimeInUTC());
-            current.setSender(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")));
-            current.setContentType("alert");
-            chatItemModelList.add(0,current);
+            chatItemModelList.add(0, current);
             chatRoomRecyclerAdapter.notifyDataSetChanged();
         }
+//        }else {
+//            //show to user that '<topic> joined'
+//            ChatItemModel current = new ChatItemModel();
+//            current.setMessage(getString(R.string.label_connected_to_topic, sharedPrefs.getTopic()));
+//            current.setSentDateTime(Util.getCurrentDateTimeInUTC());
+//            current.setSender(sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")));
+//            current.setContentType("alert");
+//            chatItemModelList.add(0,current);
+//            chatRoomRecyclerAdapter.notifyDataSetChanged();
+//        }
 
         retryPendingPublishes();
 
@@ -494,7 +496,8 @@ public class Message_Activity extends AppCompatActivity {
             jsonObject.put("datetime", Util.getCurrentDateTimeInUTC());
             jsonObject.put("content_type", current.getContentType());
 
-            message.setId(current.getMessageID());
+            Long l  = new Long(current.getMessageID());
+            message.setId(l.intValue());
             message.setQos(0);
             message.setPayload(jsonObject.toString().getBytes());
 
@@ -504,10 +507,11 @@ public class Message_Activity extends AppCompatActivity {
                 if (!client.isConnected()) {
 //                    Log.e(" messages in buffer.", mqttAndroidClient.getBufferedMessageCount() + "");
                 }
-                chatMasterUpdateUtility.updatePublishedStatus(current.getMessageID(), true);
+
+                chatMasterUpdateUtility.updatePublishedStatus(l.intValue(), true);
             } catch (Exception e) {
                 e.printStackTrace();
-                chatMasterUpdateUtility.updatePublishedStatus(current.getMessageID(), false);
+                chatMasterUpdateUtility.updatePublishedStatus(l.intValue(), false);
 
             }
 

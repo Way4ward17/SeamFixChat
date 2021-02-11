@@ -80,8 +80,8 @@ public class ChatAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ChatItemModel current = chatItemModelList.get(position);
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        final ChatItemModel current = chatItemModelList.get(position);
 //        Log.e("current", current.getMessage());
 
         if(!chatItemModelList.isEmpty()) {
@@ -94,6 +94,17 @@ public class ChatAdapter extends RecyclerView.Adapter {
                             + ChatItemModel.KEY_MESSAGE_ID + "=" + current.getMessageID(), null);
                     cursor.moveToFirst();
 
+                    if(cursor.getCount() > 0) {
+                        if (cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1) {
+                            ((ChatSentViewHolder) holder).statusPending.setVisibility(View.GONE);
+                            ((ChatSentViewHolder) holder).statusSent.setVisibility(View.VISIBLE);
+                        } else {
+                            ((ChatSentViewHolder) holder).statusPending.setVisibility(View.VISIBLE);
+                            ((ChatSentViewHolder) holder).statusSent.setVisibility(View.GONE);
+                        }
+                    }
+
+
                     ((ChatSentViewHolder) holder).body.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
@@ -104,16 +115,12 @@ public class ChatAdapter extends RecyclerView.Adapter {
                     ((ChatSentViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            dbHelper.deleteSingle(String.valueOf(current.getMessageID()));
                             ((ChatSentViewHolder) holder).delete.setVisibility(View.GONE);
+                            chatItemModelList.remove(position);
+                            notifyItemRemoved(position);
                         }
                     });
-                    if (cursor.getInt(cursor.getColumnIndex(ChatItemModel.KEY_IS_MESSAGE_SENT_SUCCESSFULLY)) == 1) {
-                        ((ChatSentViewHolder) holder).statusPending.setVisibility(View.GONE);
-                        ((ChatSentViewHolder) holder).statusSent.setVisibility(View.VISIBLE);
-                    } else {
-                        ((ChatSentViewHolder) holder).statusPending.setVisibility(View.VISIBLE);
-                        ((ChatSentViewHolder) holder).statusSent.setVisibility(View.GONE);
-                    }
 
                     break;
 

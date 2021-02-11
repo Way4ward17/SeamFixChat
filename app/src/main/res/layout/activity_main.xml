@@ -110,9 +110,8 @@
                             android:layout_height="wrap_content"/>
 
                         <EditText
-                            android:drawableStart="@drawable/ic_baseline_group_24"
+                            android:drawableStart="@drawable/ic_baseline_group_24g"
                             android:padding="12dp"
-                            android:drawableTint="?attr/colorControlNormal"
                             android:drawablePadding="7dp"
                             android:background="@drawable/button"
                             android:hint="@string/topic"
@@ -123,6 +122,15 @@
 
 
                     </LinearLayout>
+
+
+                    <ProgressBar
+                        android:layout_width="30dp"
+                        android:id="@+id/progress"
+                        android:visibility="gone"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"/>
 
                     <Button
                         android:layout_gravity="center"

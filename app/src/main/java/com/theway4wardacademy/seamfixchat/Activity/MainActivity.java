@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.theway4wardacademy.seamfixchat.R;
@@ -31,6 +32,7 @@ import static com.theway4wardacademy.seamfixchat.Utils.Util.CHAT_SERVER;
 public class MainActivity extends AppCompatActivity {
 
     Button submitBtn;
+    ProgressBar progress;
     EditText username, topic;
 
     SharedPrefManager sharedPrefs;
@@ -40,18 +42,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sharedPrefs = new SharedPrefManager(this);
+        progress = findViewById(R.id.progress);
         submitBtn = findViewById(R.id.login);
         username = findViewById(R.id.username);
         topic = findViewById(R.id.topic);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progress.setVisibility(View.VISIBLE);
                 if (!validateUsername()) {
+                    progress.setVisibility(View.GONE);
                     return;
                 }
 
                 if (!Util.isNetworkAvailable(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(), getString(R.string.label_no_internet_available), Toast.LENGTH_SHORT).show();
+                    progress.setVisibility(View.GONE);
                     return;
                 }
 
@@ -89,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                         publishUserMessage( "User " + "\'" +  sharedPrefs.getUsername().substring(0, sharedPrefs.getUsername().lastIndexOf("_")) + "\'" + " has joined the chat", "alert", mqttAndroidClient);
                                         sharedPrefs.setIsNewJoineeBroadcasted(true);
                                         sharedPrefs.saveTopic("testtopic/"+topic.getText().toString());
+                                        progress.setVisibility(View.GONE);
                                     }
 
 
@@ -105,10 +112,12 @@ public class MainActivity extends AppCompatActivity {
                             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                                 Log.e("subscription","fail");
                                 sharedPrefs.setIsUserSubscribed(false);
+                                progress.setVisibility(View.GONE);
                                 Toast.makeText(getApplicationContext(), getString(R.string.label_something_went_wrong), Toast.LENGTH_LONG).show();
                             }
                         });
                     } catch (MqttException e) {
+                        progress.setVisibility(View.GONE);
                         Log.e("subscribe exception", e.toString());
                         Toast.makeText(getApplicationContext(), getString(R.string.label_something_went_wrong), Toast.LENGTH_LONG).show();
                     }
@@ -117,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Log.e("Failed to connect to: ", CHAT_SERVER);
+                    progress.setVisibility(View.GONE);
                     sharedPrefs.setIsUserSubscribed(false);
                 }
             });
@@ -124,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MqttException ex){
             Log.e("connect exception", ex.toString());
+            progress.setVisibility(View.GONE);
             sharedPrefs.setIsUserSubscribed(false);
         }
 

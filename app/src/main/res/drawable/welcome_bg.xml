@@ -3,13 +3,13 @@
     android:layout_height="match_parent">
     <item android:drawable="@android:color/white" />
     <item
-        android:width="200dp"
-        android:height="200dp"
+        android:width="100dp"
+        android:height="100dp"
         android:id="@+id/top"
         android:gravity="center">
         <bitmap
-            android:width="200dp"
-            android:height="200dp"
+            android:width="100dp"
+            android:height="100dp"
             android:src="@drawable/ic_launcher" />
     </item>
 

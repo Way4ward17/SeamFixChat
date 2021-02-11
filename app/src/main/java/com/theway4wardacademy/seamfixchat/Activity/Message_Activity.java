@@ -508,8 +508,7 @@ public class Message_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 chatMasterUpdateUtility.updatePublishedStatus(current.getMessageID(), false);
-//                int a = sharedPrefs.getUnPublishedMessageCount() + 1;
-//                sharedPrefs.setUnpublishedMessageCount(a);
+
             }
 
         } catch (MqttPersistenceException e) {
@@ -564,9 +563,11 @@ public class Message_Activity extends AppCompatActivity {
                         return true;
                     case R.id.unsub:
                         unsubscribe();
+                        dbHelper.deleteOldTele();
                         return true;
                     case R.id.exit:
                         finish();
+                        dbHelper.deleteOldTele();
                         return true;
                     default:
                         return false;
